@@ -1,15 +1,24 @@
 import * as React from 'react';
 
-export class Stage extends React.Component<{}, {}> {
+import {styled} from './styling';
+
+interface Props {
+  className?: string;
+}
+
+export class Stage extends React.Component<Props, {}> {
   public render() {
     return (
-      <div>
+      <div className={this.props.className}>
         Stage
       </div>
     );
   }
 }
 
+const StyledStage = styled(Stage)`
+`;
+
 export function rootComponent() {
-  return <Stage />;
+  return <StyledStage />;
 }
