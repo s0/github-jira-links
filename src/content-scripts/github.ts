@@ -28,7 +28,7 @@ if (!(window as any).GITHUB_JIRA_SCRIPT_INJECTED) {
     return null;
   };
 
-  const updateIssueRow = (row: Element) => {
+  const updateIssueRow = async (row: Element) => {
     const issueLink = row.querySelector('a[data-hovercard-type="issue"]') || row.querySelector('a[data-hovercard-type="pull_request"]');
     if (!issueLink) return;
     const href = (issueLink as HTMLAnchorElement).href;
@@ -46,8 +46,12 @@ if (!(window as any).GITHUB_JIRA_SCRIPT_INJECTED) {
       };
       const loading = dom.createLoadingLabel();
       labels.appendChild(loading);
-      loadJiraData(issueURL, jira);
-
+      const info = await loadJiraData(issueURL, jira);
+      loading.remove();
+      for (const i of info) {
+        const label = dom.createJiraLabel(i);
+        labels.appendChild(label);
+      }
     }
   };
 
