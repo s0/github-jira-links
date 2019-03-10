@@ -7,11 +7,11 @@ export interface LinkConfiguration {
   } | {
     scope: 'single'; owner: string; repo: string;
   };
-  jiraDomain: string;
+  jiraBaseUrl: string;
 }
 
 export const CONFIG: LinkConfiguration[] = [{
   gitHubDomain: 'github.com',
-  repos: { scope: 'all' },
-  jiraDomain: 'jira.semmle.com'
+  repos: { scope: 'single', owner: 'Semmle', repo: 'ql' },
+  jiraBaseUrl: 'https://jira.semmle.com'
 }];

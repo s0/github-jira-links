@@ -33,7 +33,7 @@ function missingOriginPermissions(): string[] {
   const missing = new Set<string>();
   for (const conf of CONFIG) {
     const gh = `https://${conf.gitHubDomain}/*`;
-    const jira = `https://${conf.jiraDomain}/*`;
+    const jira = `${conf.jiraBaseUrl}/*`;
     if (!grantedOrigins.has(gh)) missing.add(gh);
     if (!grantedOrigins.has(jira)) missing.add(jira);
   }
@@ -71,8 +71,6 @@ function intectContentScripts(tab: chrome.tabs.Tab) {
       chrome.tabs.executeScript(tab.id, {
         file: 'content-scripts/github.js'
       });
-    } else if (url.host === config.jiraDomain) {
-      // TODO: inject jira content script
     }
   }
 }
