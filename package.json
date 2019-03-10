@@ -26,5 +26,10 @@
     "typescript": "^2.7.2",
     "webpack": "1.14.0"
   },
-  "dependencies": {}
+  "dependencies": {
+    "@types/react": "^16.8.7",
+    "@types/react-dom": "^16.8.2",
+    "react": "^16.8.4",
+    "react-dom": "^16.8.4"
+  }
 }

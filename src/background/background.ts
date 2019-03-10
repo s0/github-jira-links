@@ -45,6 +45,8 @@ function missingOriginPermissions(): string[] {
  * TODO: create configuration page
  */
 chrome.browserAction.onClicked.addListener(tab => {
+  chrome.runtime.openOptionsPage();
+  // TODO: move the following to the options page
   const missingOrigins = missingOriginPermissions();
   console.log('Missing Origins:', missingOrigins);
   if (missingOrigins.length > 0) {

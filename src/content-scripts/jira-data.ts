@@ -16,7 +16,7 @@ export const StatusColors = {
   'brown': { bg: '#815b3a', text: '#fff' },
   'warm-red': { bg: '#d04437', text: '#fff' },
   'blue-gray': { bg: '#4a6785', text: '#fff' },
-}
+};
 
 type StatusColor = keyof typeof StatusColors;
 
@@ -36,7 +36,7 @@ interface JiraSearchResponse {
 
 /**
  * Map from JIRA URL -> Issue URL -> result
- * 
+ *
  * page-local cache of jira issues to reduce the load of requests when navigating around github.
  * This only improves situations where no page reloads happen (i.e. when GitHub uses pushState).
  * Users can still reload the page to refresh the data from Jira.
@@ -59,7 +59,7 @@ export async function loadJiraData(issueUrl: URL, jiraUrl: string): Promise<Jira
   const body = await response.text();
   const json = JSON.parse(body) as JiraSearchResponse;
   const result: JiraLink[] = [];
-  for(const issue of json.issues) {
+  for (const issue of json.issues) {
     result.push({
       name: issue.key,
       url: `${jiraUrl}/browse/${issue.key}`,

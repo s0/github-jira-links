@@ -32,6 +32,10 @@ gulp.task('copy-manifest-json', function () {
     return gulp.src(['src/manifest.json']).pipe(gulp.dest('dist'));
 });
 
+gulp.task('copy-options-html', function () {
+  return gulp.src(['src/options/options.html']).pipe(gulp.dest('dist'));
+});
+
 gulp.task('copy-libs', function () {
     return gulp.src(['node_modules/jquery/dist/jquery.min.js']).pipe(gulp.dest('dist/lib'));
 });
@@ -41,7 +45,8 @@ gulp.task('webpack', ['ts'], function(callback) {
     webpack({
         entry: {
           background: './.tmp/background/background.js',
-          'content-scripts/github': './.tmp/content-scripts/github.js'
+          'content-scripts/github': './.tmp/content-scripts/github.js',
+          options: './.tmp/options/options.js'
         },
         output: {
             filename: "[name].js",
@@ -69,7 +74,7 @@ gulp.task('tslint', function() {
 gulp.task('default', function(callback) {
   runSequence(
     'clean',
-    ['copy-manifest-json', 'copy-libs'],
+    ['copy-manifest-json', 'copy-options-html', 'copy-libs'],
     ['webpack'],
     ['tslint'],
     callback);

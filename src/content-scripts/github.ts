@@ -43,7 +43,7 @@ if (!(window as any).GITHUB_JIRA_SCRIPT_INJECTED) {
         const parent = issueLink.parentNode;
         if (!(parent instanceof Element)) return;
         parent.insertBefore(labels, parent.querySelector('.text-small'));
-      };
+      }
       const loading = dom.createLoadingLabel();
       labels.appendChild(loading);
       const info = await loadJiraData(issueURL, jira);
