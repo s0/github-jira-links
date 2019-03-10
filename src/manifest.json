@@ -1,0 +1,17 @@
+{
+  "manifest_version": 2,
+  "name": "GitHub Jira Links",
+  "version": "0.1",
+  "permissions": [
+  ],
+  "background": {
+    "persistent": false,
+    "scripts": ["background.js"]
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://*/*"],
+      "js": ["content-scripts/github.js"]
+    }
+  ]
+}
