@@ -1,10 +1,4 @@
-import {LinkConfiguration} from '../shared/config';
-
-const CONFIG: LinkConfiguration[] = [{
-  gitHubDomain: 'github.com',
-  repos: {scope: 'all'},
-  jiraDomain: 'jira.semmle.com'
-}];
+import {CONFIG} from '../shared/config';
 
 /**
  * Maintained list of origins that we have permission for
