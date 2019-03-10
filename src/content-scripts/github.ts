@@ -50,6 +50,7 @@ if (!(window as any).GITHUB_JIRA_SCRIPT_INJECTED) {
       loading.remove();
       for (const i of info) {
         const label = dom.createJiraLabel(i);
+        labels.appendChild(document.createTextNode(' '));
         labels.appendChild(label);
       }
     }

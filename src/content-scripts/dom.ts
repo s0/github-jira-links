@@ -1,4 +1,4 @@
-import { JiraLink } from './jira-data';
+import { JiraLink, StatusColors } from './jira-data';
 
 export function createLoadingLabel() {
   const a = document.createElement('a');
@@ -19,6 +19,17 @@ export function createJiraLabel(jira: JiraLink) {
   a.href = jira.url;
   a.target = '_blank';
   a.rel = 'nofollow noopener';
+
+  const status = document.createElement('span');
+  a.appendChild(status);
+  status.innerText = jira.status;
+  status.style.marginLeft = '5px';
+  status.style.background = StatusColors[jira.statusColor].bg;
+  status.style.color = StatusColors[jira.statusColor].text;
+  status.style.padding = '1px 4px';
+  status.style.borderRadius = '3px';
+  status.style.fontSize = '11px';
+  status.style.border = '1px solid rgba(255, 255, 255, 0.4)';
 
   return a;
 }

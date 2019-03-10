@@ -1,7 +1,24 @@
 export interface JiraLink {
   name: string;
   url: string;
+  status: string;
+  statusColor: StatusColor;
 }
+
+/**
+ * Well-known status colors, as defined here:
+ * - https://docs.atlassian.com/DAC/javadoc/jira/reference/com/atlassian/jira/issue/status/category/StatusCategory.html
+ */
+export const StatusColors = {
+  'medium-gray': { bg: '#ccc', text: '#333' },
+  'green': { bg: '#14892c', text: '#fff' },
+  'yellow': { bg: '#ffd351', text: '#594300' },
+  'brown': { bg: '#815b3a', text: '#fff' },
+  'warm-red': { bg: '#d04437', text: '#fff' },
+  'blue-gray': { bg: '#4a6785', text: '#fff' },
+}
+
+type StatusColor = keyof typeof StatusColors;
 
 interface JiraSearchResponse {
   issues: {
@@ -9,7 +26,7 @@ interface JiraSearchResponse {
       status: {
         name: string;
         statusCategory: {
-          colorName: string;
+          colorName: StatusColor;
         }
       }
     };
@@ -29,7 +46,9 @@ export async function loadJiraData(issueUrl: URL, jiraUrl: string): Promise<Jira
   for(const issue of json.issues) {
     result.push({
       name: issue.key,
-      url: `${jiraUrl}/browse/${issue.key}`
+      url: `${jiraUrl}/browse/${issue.key}`,
+      status: issue.fields.status.name,
+      statusColor: issue.fields.status.statusCategory.colorName
     });
   }
   return result;
