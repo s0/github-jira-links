@@ -1,6 +1,7 @@
 import { CONFIG } from '../shared/config';
 
 import { loadJiraData } from './jira-data';
+import * as dom from './dom';
 
 if (!(window as any).GITHUB_JIRA_SCRIPT_INJECTED) {
   (window as any).GITHUB_JIRA_SCRIPT_INJECTED = true;
@@ -28,14 +29,25 @@ if (!(window as any).GITHUB_JIRA_SCRIPT_INJECTED) {
   };
 
   const updateIssueRow = (row: Element) => {
-    const issueLink = row.querySelector('a[data-hovercard-type="issue"]');
+    const issueLink = row.querySelector('a[data-hovercard-type="issue"]') || row.querySelector('a[data-hovercard-type="pull_request"]');
     if (!issueLink) return;
     const href = (issueLink as HTMLAnchorElement).href;
     if (!href) return;
     const issueURL = new URL(href);
     const jira = getMatchingJira(issueURL);
     if (jira) {
+      let labels = row.querySelector('.labels');
+      if (!labels) {
+        labels = document.createElement('span');
+        labels.className = 'labels lh-default';
+        const parent = issueLink.parentNode;
+        if (!(parent instanceof Element)) return;
+        parent.insertBefore(labels, parent.querySelector('.text-small'));
+      };
+      const loading = dom.createLoadingLabel();
+      labels.appendChild(loading);
       loadJiraData(issueURL, jira);
+
     }
   };
 
