@@ -140,6 +140,15 @@ export class Stage extends React.Component<Props, State> {
                 <a href={`${link.jiraBaseUrl}/`} target="_blank" rel="nofollow noopener">{link.jiraBaseUrl}</a>
               </td>
               <td>
+                {link.repos.scope === 'all' ? (
+                  'All repositories'
+                ) : link.repos.scope === 'owner' ? (
+                  <span>All repositories by <a href={`https://${link.gitHubDomain}/${link.repos.owner}`} target='_blank' rel='nofollow noopener'>{link.repos.owner}</a></span>
+                ) : (
+                  <a href={`https://${link.gitHubDomain}/${link.repos.owner}/${link.repos.repo}`} target='_blank' rel='nofollow noopener'>{link.repos.owner}/{link.repos.repo}</a>
+                )}
+              </td>
+              <td>
                 <a onClick={() => this.deleteLink(key)}>delete</a>
               </td>
             </tr>
