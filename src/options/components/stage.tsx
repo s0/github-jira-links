@@ -4,7 +4,6 @@ import * as config from '../../shared/config';
 import * as permissions from '../../shared/permissions';
 
 import {styled} from './styling';
-import { string } from 'prop-types';
 
 interface Props {
   className?: string;
