@@ -6,6 +6,7 @@ var tslint = require('tslint');
 var gulpTslint = require('gulp-tslint');
 var runSequence = require('run-sequence');
 var webpack = require('webpack');
+var zip = require('gulp-zip');
 
 var tsProject = ts.createProject('src/tsconfig.json');
 
@@ -17,7 +18,7 @@ function handleError(err) {
 }
 
 gulp.task('clean', function() {
-  return gulp.src(['.tmp', 'dist'], {read: false})
+  return gulp.src(['.tmp', 'dist', 'dist.zip'], {read: false})
         .pipe(clean());
 });
 
@@ -34,10 +35,6 @@ gulp.task('copy-manifest-json', function () {
 
 gulp.task('copy-options-html', function () {
   return gulp.src(['src/options/options.html']).pipe(gulp.dest('dist'));
-});
-
-gulp.task('copy-libs', function () {
-    return gulp.src(['node_modules/jquery/dist/jquery.min.js']).pipe(gulp.dest('dist/lib'));
 });
 
 gulp.task('webpack', ['ts'], function(callback) {
@@ -74,8 +71,14 @@ gulp.task('tslint', function() {
 gulp.task('default', function(callback) {
   runSequence(
     'clean',
-    ['copy-manifest-json', 'copy-options-html', 'copy-libs'],
+    ['copy-manifest-json', 'copy-options-html'],
     ['webpack'],
     ['tslint'],
     callback);
 });
+
+gulp.task('dist', ['default'], () =>
+  gulp.src('dist/**/*')
+    .pipe(zip('dist.zip'))
+    .pipe(gulp.dest('./'))
+);
