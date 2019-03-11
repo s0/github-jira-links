@@ -1,4 +1,4 @@
-import {CONFIG} from '../shared/config';
+import { LinkConfiguration, getConfig, addListener } from '../shared/config';
 import { missingOriginPermissions } from '../shared/permissions';
 
 /**
@@ -26,15 +26,18 @@ checkPermissions();
 chrome.permissions.onAdded.addListener(checkPermissions);
 chrome.permissions.onRemoved.addListener(checkPermissions);
 
+let config: LinkConfiguration[] = [];
+
+addListener(c => config = c);
+getConfig().then(c => config = c);
 
 /**
  * TODO: create a warning icon when permissions are not correct
- * TODO: create configuration page
  */
 chrome.browserAction.onClicked.addListener(tab => {
   chrome.runtime.openOptionsPage();
   // TODO: move the following to the options page
-  const missingOrigins = missingOriginPermissions(CONFIG, grantedOrigins);
+  const missingOrigins = missingOriginPermissions(config, grantedOrigins);
   console.log('Missing Origins:', missingOrigins);
   if (missingOrigins.length > 0) {
     chrome.permissions.request({origins: missingOrigins});
@@ -55,8 +58,8 @@ function intectContentScripts(tab: chrome.tabs.Tab) {
   // Check if we can read the URL
   if (!tab.url || !tab.id) return;
   const url = new URL(tab.url);
-  for (const config of CONFIG) {
-    if (url.host === config.gitHubDomain) {
+  for (const c of config) {
+    if (url.host === c.gitHubDomain) {
       chrome.tabs.executeScript(tab.id, {
         file: 'content-scripts/github.js'
       });

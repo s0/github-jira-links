@@ -12,13 +12,6 @@ export interface LinkConfiguration {
   jiraBaseUrl: string;
 }
 
-export const CONFIG: LinkConfiguration[] = [{
-  gitHubDomain: 'github.com',
-  repos: { scope: 'single', owner: 'Semmle', repo: 'ql' },
-  jiraBaseUrl: 'https://jira.semmle.com'
-}];
-
-
 export function getConfig(): Promise<LinkConfiguration[]> {
   return new Promise(resolve => {
     chrome.storage.sync.get(data => {
