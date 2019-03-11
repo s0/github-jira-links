@@ -31,7 +31,10 @@ getConfig().then(config => {
     };
 
     const updateIssueRow = async (row: Element) => {
-      const issueLink = row.querySelector('a[data-hovercard-type="issue"]') || row.querySelector('a[data-hovercard-type="pull_request"]');
+      const issueLink =
+        row.querySelector('a[data-hovercard-type="issue"]') ||
+        row.querySelector('a[data-hovercard-type="pull_request"]') ||
+        row.querySelector('a.h4.link-gray-dark');
       if (!issueLink) return;
       const href = (issueLink as HTMLAnchorElement).href;
       if (!href) return;
