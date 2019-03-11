@@ -20,14 +20,14 @@ export function getConfig(): Promise<LinkConfiguration[]> {
       } else {
         resolve([]);
       }
-    })
-  })
+    });
+  });
 }
 
 export function setConfig(config: LinkConfiguration[]): Promise<void> {
   return new Promise(resolve => {
     chrome.storage.sync.set({ [STORAGE_KEY]: config }, resolve);
-  })
+  });
 }
 
 export function addListener(l: (config: LinkConfiguration[]) => void) {

@@ -27,7 +27,7 @@ export function unneededOriginPermissions(config: LinkConfiguration[], grantedOr
   }
   const unneeded = new Set<string>();
   for (const origin of grantedOrigins) {
-    if(!needed.has(origin))
+    if (!needed.has(origin))
       unneeded.add(origin);
   }
   return Array.from(unneeded);
