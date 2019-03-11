@@ -1,6 +1,7 @@
 import * as React from 'react';
 
 import * as config from '../../shared/config';
+import * as permissions from '../../shared/permissions';
 
 import {styled} from './styling';
 import { string } from 'prop-types';
@@ -11,6 +12,7 @@ interface Props {
 
 interface State {
   config: config.LinkConfiguration[];
+  grantedOrigins: Set<string>;
 
   // Form State
   gitHubDomain: string;
@@ -26,6 +28,7 @@ export class Stage extends React.Component<Props, State> {
     super(props);
     this.state = {
       config: [],
+      grantedOrigins: new Set(),
       gitHubDomain: 'github.com',
       jiraURL: '',
       gitHubScope: 'single',
@@ -39,11 +42,29 @@ export class Stage extends React.Component<Props, State> {
     this.gitHubOwnerChange = this.gitHubOwnerChange.bind(this);
     this.gitHubRepoChange = this.gitHubRepoChange.bind(this);
     this.addLink = this.addLink.bind(this);
+    this.deleteLink = this.deleteLink.bind(this);
   }
 
   public componentDidMount() {
     config.getConfig().then(config => this.setState({config}));
     config.addListener(config => this.setState({ config }));
+
+    const checkPermissions = () => {
+      console.log('checking permissions');
+      chrome.permissions.getAll(permissions => {
+        const grantedOrigins = new Set<string>();
+        if (permissions.origins) {
+          for (const origin of permissions.origins)
+            grantedOrigins.add(origin);
+        }
+        this.setState({ grantedOrigins });
+      });
+    }
+
+    // Check permissions on startup, and when changes.
+    checkPermissions();
+    chrome.permissions.onAdded.addListener(checkPermissions);
+    chrome.permissions.onRemoved.addListener(checkPermissions);
   }
 
   private gitHubDomainChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -82,7 +103,12 @@ export class Stage extends React.Component<Props, State> {
       )
     });
     config.setConfig(c);
-    // TODO: require new permissions
+    // Work out which origins we do not have but need
+    const missingOrigins = permissions.missingOriginPermissions(c, this.state.grantedOrigins);
+    console.log(this.state.grantedOrigins, missingOrigins);
+    if (missingOrigins.length > 0) {
+      chrome.permissions.request({ origins: missingOrigins });
+    }
   }
 
   private deleteLink(key: number) {
@@ -90,7 +116,11 @@ export class Stage extends React.Component<Props, State> {
       const c = this.state.config.slice();
       c.splice(key, 1);
       config.setConfig(c);
-      // TODO: remove unneeded permissions
+      const unneededOrigins = permissions.unneededOriginPermissions(c, this.state.grantedOrigins);
+      console.log(this.state.grantedOrigins, unneededOrigins);
+      if (unneededOrigins.length > 0) {
+        chrome.permissions.remove({ origins: unneededOrigins });
+      }
     }
   }
 

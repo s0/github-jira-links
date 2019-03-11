@@ -1,4 +1,5 @@
 import {CONFIG} from '../shared/config';
+import { missingOriginPermissions } from '../shared/permissions';
 
 /**
  * Maintained list of origins that we have permission for
@@ -25,20 +26,6 @@ checkPermissions();
 chrome.permissions.onAdded.addListener(checkPermissions);
 chrome.permissions.onRemoved.addListener(checkPermissions);
 
-/**
- * Assuming that grantedOrigins is up to date, calculate which permissions
- * we're missing.
- */
-function missingOriginPermissions(): string[] {
-  const missing = new Set<string>();
-  for (const conf of CONFIG) {
-    const gh = `https://${conf.gitHubDomain}/*`;
-    const jira = `${conf.jiraBaseUrl}/*`;
-    if (!grantedOrigins.has(gh)) missing.add(gh);
-    if (!grantedOrigins.has(jira)) missing.add(jira);
-  }
-  return Array.from(missing);
-}
 
 /**
  * TODO: create a warning icon when permissions are not correct
@@ -47,7 +34,7 @@ function missingOriginPermissions(): string[] {
 chrome.browserAction.onClicked.addListener(tab => {
   chrome.runtime.openOptionsPage();
   // TODO: move the following to the options page
-  const missingOrigins = missingOriginPermissions();
+  const missingOrigins = missingOriginPermissions(CONFIG, grantedOrigins);
   console.log('Missing Origins:', missingOrigins);
   if (missingOrigins.length > 0) {
     chrome.permissions.request({origins: missingOrigins});
