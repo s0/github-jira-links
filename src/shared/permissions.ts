@@ -1,4 +1,5 @@
 import { LinkConfiguration } from './config';
+import * as config from './config';
 
 /**
  * Assuming that grantedOrigins is up to date, calculate which permissions
