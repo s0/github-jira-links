@@ -1,6 +1,7 @@
 import { LinkConfiguration } from './config';
 import * as config from './config';
 import * as config2 from './config';
+import * as config3 from './config';
 
 /**
  * Assuming that grantedOrigins is up to date, calculate which permissions
