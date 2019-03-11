@@ -132,28 +132,30 @@ export class Stage extends React.Component<Props, State> {
         <p>Every time you view lists of issues or pull requests on GitHub, the plugin will check the appropriate JIRA for each issue to see if there is a reference to it, and if so it will add a link to JIRA, including the status information.</p>
         <p>Have suggestions, feedback or want to report an issue? Please <a href='https://github.com/samlanning/github-jira-links/issues' target='_blank' rel='nofollow noopener'>open an issue on GitHub</a>.</p>
         <table className="list">
-          {this.state.config.map((link, key) => (
-            <tr key={key} className="link">
-              <td>
-                <a href={`https://${link.gitHubDomain}/`} target="_blank" rel="nofollow noopener">{link.gitHubDomain}</a>
-              </td>
-              <td>
-                <a href={`${link.jiraBaseUrl}/`} target="_blank" rel="nofollow noopener">{link.jiraBaseUrl}</a>
-              </td>
-              <td>
-                {link.repos.scope === 'all' ? (
-                  'All repositories'
-                ) : link.repos.scope === 'owner' ? (
-                  <span>All repositories by <a href={`https://${link.gitHubDomain}/${link.repos.owner}`} target='_blank' rel='nofollow noopener'>{link.repos.owner}</a></span>
-                ) : (
-                  <a href={`https://${link.gitHubDomain}/${link.repos.owner}/${link.repos.repo}`} target='_blank' rel='nofollow noopener'>{link.repos.owner}/{link.repos.repo}</a>
-                )}
-              </td>
-              <td>
-                <a onClick={() => this.deleteLink(key)}>delete</a>
-              </td>
-            </tr>
-          ))}
+          <tbody>
+            {this.state.config.map((link, key) => (
+              <tr key={key} className="link">
+                <td>
+                  <a href={`https://${link.gitHubDomain}/`} target="_blank" rel="nofollow noopener">{link.gitHubDomain}</a>
+                </td>
+                <td>
+                  <a href={`${link.jiraBaseUrl}/`} target="_blank" rel="nofollow noopener">{link.jiraBaseUrl}</a>
+                </td>
+                <td>
+                  {link.repos.scope === 'all' ? (
+                    'All repositories'
+                  ) : link.repos.scope === 'owner' ? (
+                    <span>All repositories by <a href={`https://${link.gitHubDomain}/${link.repos.owner}`} target='_blank' rel='nofollow noopener'>{link.repos.owner}</a></span>
+                  ) : (
+                    <a href={`https://${link.gitHubDomain}/${link.repos.owner}/${link.repos.repo}`} target='_blank' rel='nofollow noopener'>{link.repos.owner}/{link.repos.repo}</a>
+                  )}
+                </td>
+                <td>
+                  <a onClick={() => this.deleteLink(key)}>delete</a>
+                </td>
+              </tr>
+            ))}
+          </tbody>
         </table>
         <form onSubmit={this.addLink}>
           <h2>Add a new link</h2>
