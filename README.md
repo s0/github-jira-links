@@ -1,3 +1,11 @@
+<p align="center">
+  <a href="https://chrome.google.com/webstore/detail/links-for-github-jira/mcedjinjmcpfknajacebeokngmnlphik"><img src="doc/webstore.png" /></a>
+</p>
+
+# Links for GitHub & Jira
+
+
+
 Chrome extension that adds backlinks to JIRA issues from GitHub issues and PRs
 
 ![](doc/screenshot.png)
