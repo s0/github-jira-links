@@ -23,7 +23,7 @@ injectGlobal`
 body {
   background: #111;
   margin: 0;
-  padding: 0;
+  padding: 20px;
   font-size: 14px;
   color: #ddd;
 }
