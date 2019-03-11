@@ -130,6 +130,7 @@ export class Stage extends React.Component<Props, State> {
         <h1>Links for GitHub &amp; Jira</h1>
         <p>Configure which GitHub repositories you would like to link with which JIRA installations below. This plugin supports both GitHub Enterprise, and GitHub.com.</p>
         <p>Every time you view lists of issues or pull requests on GitHub, the plugin will check the appropriate JIRA for each issue to see if there is a reference to it, and if so it will add a link to JIRA, including the status information.</p>
+        <p>Have suggestions, feedback or want to report an issue? Please <a href='https://github.com/samlanning/github-jira-links/issues' target='_blank' rel='nofollow noopener'>open an issue on GitHub</a>.</p>
         <table className="list">
           {this.state.config.map((link, key) => (
             <tr key={key} className="link">
@@ -180,12 +181,23 @@ export class Stage extends React.Component<Props, State> {
             <button type="submit">Add</button>
           </div>
         </form>
+        <p>This extension is an open source project - <a href='https://github.com/samlanning/github-jira-links' target='_blank' rel='nofollow noopener'>Check out the source</a>. Made by <a href='https://twitter.com/samlanning' target='_blank' rel='nofollow noopener'>@samlanning</a></p>
       </div>
     );
   }
 }
 
 const StyledStage = styled(Stage)`
+
+a {
+  color: #fff;
+  text-decoration: underline;
+  cursor: pointer;
+
+  &:hover {
+    opacity: 0.7;
+  }
+}
 
 table {
   border: 1px solid #222;
@@ -207,16 +219,6 @@ table {
 
     &:last-child td {
       border-bottom: none;
-    }
-  }
-
-  a {
-    color: #fff;
-    text-decoration: underline;
-    cursor: pointer;
-
-    &:hover {
-      opacity: 0.7;
     }
   }
 }
