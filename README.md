@@ -6,6 +6,7 @@
 
 [![Total alerts](https://img.shields.io/lgtm/alerts/g/samlanning/github-jira-links.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/samlanning/github-jira-links/alerts/)
 [![Language grade: JavaScript](https://img.shields.io/lgtm/grade/javascript/g/samlanning/github-jira-links.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/samlanning/github-jira-links/context:javascript)
+[![Build Status](https://dev.azure.com/samlanning/extensions/_apis/build/status/samlanning.github-jira-links?branchName=master)](https://dev.azure.com/samlanning/extensions/_build?definitionId=1)
 
 Chrome extension that adds backlinks to JIRA issues from GitHub issues and PRs
 
