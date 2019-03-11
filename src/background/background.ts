@@ -44,6 +44,13 @@ chrome.browserAction.onClicked.addListener(tab => {
   }
 });
 
+/**
+ * Open the options page when the plugin is first installed
+ */
+chrome.runtime.onInstalled.addListener(function (object) {
+  chrome.runtime.openOptionsPage();
+});
+
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
   if (changeInfo.status === 'complete') {
     intectContentScripts(tab);
