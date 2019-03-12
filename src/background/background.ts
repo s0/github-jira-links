@@ -4,8 +4,6 @@ import { EXTENSION_NAME } from '../shared/consts';
 
 getConfig().then(config => {
 
-  addListener(c => config = c);
-
   /**
    * Maintained list of origins that we have permission for
    */
@@ -39,6 +37,11 @@ getConfig().then(config => {
   checkPermissions();
   chrome.permissions.onAdded.addListener(checkPermissions);
   chrome.permissions.onRemoved.addListener(checkPermissions);
+
+  addListener(c => {
+    config = c;
+    checkPermissions();
+  });
 
   /**
    * TODO: create a warning icon when permissions are not correct
