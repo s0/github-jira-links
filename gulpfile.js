@@ -37,6 +37,11 @@ gulp.task('copy-options-html', function () {
   return gulp.src(['src/options/options.html']).pipe(gulp.dest('dist'));
 });
 
+gulp.task('copy-icons', function () {
+  return gulp.src(['img/icon*.png'])
+    .pipe(gulp.dest('dist/'));
+});
+
 gulp.task('webpack', ['ts'], function(callback) {
     // run webpack
     webpack({
@@ -71,7 +76,7 @@ gulp.task('tslint', function() {
 gulp.task('default', function(callback) {
   runSequence(
     'clean',
-    ['copy-manifest-json', 'copy-options-html'],
+    ['copy-manifest-json', 'copy-options-html', 'copy-icons'],
     ['webpack'],
     ['tslint'],
     callback);
