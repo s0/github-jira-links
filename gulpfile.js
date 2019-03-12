@@ -37,8 +37,8 @@ gulp.task('copy-options-html', function () {
   return gulp.src(['src/options/options.html']).pipe(gulp.dest('dist'));
 });
 
-gulp.task('copy-icons', function () {
-  return gulp.src(['img/icon*.png'])
+gulp.task('copy-images', function () {
+  return gulp.src(['img/icon*.png', 'img/header.svg'])
     .pipe(gulp.dest('dist/'));
 });
 
@@ -76,7 +76,7 @@ gulp.task('tslint', function() {
 gulp.task('default', function(callback) {
   runSequence(
     'clean',
-    ['copy-manifest-json', 'copy-options-html', 'copy-icons'],
+    ['copy-manifest-json', 'copy-options-html', 'copy-images'],
     ['webpack'],
     ['tslint'],
     callback);
