@@ -10,7 +10,7 @@
 
 Chrome extension that adds backlinks to JIRA issues from GitHub issues and PRs
 
-![](doc/screenshot.png)
+![](img/screenshot.png)
 
 When you view lists of issues or pull requests on GitHub (either GitHub.com, or GitHub enterprise), the extension will use the API of the JIRA installations of your choosing to see if there are any JIRA Issues that mention each GitHub Issue or PR. It will then insert these issues, along with their current status, right into the GitHub UI alongside the labels.
 
