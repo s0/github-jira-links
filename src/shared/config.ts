@@ -1,14 +1,16 @@
 const STORAGE_KEY = 'links';
 
+export type LinkConfigurationRepos = {
+  scope: 'all';
+} | {
+  scope: 'owner'; owner: string;
+} | {
+  scope: 'single'; owner: string; repo: string;
+};
+
 export interface LinkConfiguration {
   gitHubDomain: string;
-  repos: {
-    scope: 'all';
-  } | {
-    scope: 'owner'; owner: string;
-  } | {
-    scope: 'single'; owner: string; repo: string;
-  };
+  repos: LinkConfigurationRepos;
   jiraBaseUrl: string;
 }
 
