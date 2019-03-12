@@ -30,10 +30,10 @@ function l10nJoinItems(items: string[]): string {
 }
 
 interface Validation {
-  gitHubDomainInvalid: boolean;
-  jiraURLInvalid: boolean;
-  gitHubOwnerInvalid: boolean;
-  gitHubRepoInvalid: boolean;
+  gitHubDomainInvalid: false | string;
+  jiraURLInvalid: false | string;
+  gitHubOwnerInvalid: false | string;
+  gitHubRepoInvalid: false | string;
 }
 
 /** Very primitive sanity check on repo and owner names */
@@ -175,10 +175,16 @@ export class Stage extends React.Component<Props, State> {
       this.setState({invalidState: null});
     } else {
       const invalidState: Validation = {
-        gitHubDomainInvalid: !gitHubDomain,
-        jiraURLInvalid: !jiraBaseUrl,
-        gitHubOwnerInvalid: repos.state === 'invalid' && !!repos.invalid.owner,
-        gitHubRepoInvalid: repos.state === 'invalid' && !!repos.invalid.repo
+        gitHubDomainInvalid: !gitHubDomain && (this.state.gitHubDomain === '' ? 'Please supply a GitHub Domain' : 'Invalid GitHub Domain'),
+        jiraURLInvalid: !jiraBaseUrl && (this.state.jiraURL === '' ? 'Please supply a JIRA URL' : 'Invalid JIRA URL'),
+        gitHubOwnerInvalid: repos.state === 'invalid' && !!repos.invalid.owner && (
+          this.state.gitHubOwner === '' ?
+          'Please enter the name of a GitHub organization or user' : 'Invalid organization / user'
+        ),
+        gitHubRepoInvalid: repos.state === 'invalid' && !!repos.invalid.repo && (
+          this.state.gitHubRepo === '' ?
+            'Please enter the name of the repository you would like to link' : 'Invalid repository name'
+        )
       };
       this.setState({ invalidState });
     }
@@ -258,7 +264,7 @@ export class Stage extends React.Component<Props, State> {
         <form onSubmit={this.addLink}>
           <h2>Add a new link</h2>
           <div className="form-group">
-            <label>GitHub Domain:</label>
+            <label>GitHub domain:</label>
             <input
               className={this.state.invalidState && this.state.invalidState.gitHubDomainInvalid ? 'invalid' : ''}
               type="text"
@@ -274,7 +280,7 @@ export class Stage extends React.Component<Props, State> {
               value={this.state.jiraURL} />
           </div>
           <div className="form-group">
-            <label>Linked Repositories:</label>
+            <label>Linked repositories:</label>
             <select onChange={this.dropdownChange} value={this.state.gitHubScope}>
               <option value="all">All Repositories</option>
               <option value="owner">All Repositories for an Org / Author</option>
@@ -282,14 +288,14 @@ export class Stage extends React.Component<Props, State> {
             </select>
           </div>
           <div className="form-group">
-            <label>Organization / Author:</label>
+            <label>GitHub organization / user:</label>
             <input
               className={this.state.invalidState && this.state.invalidState.gitHubOwnerInvalid ? 'invalid' : ''}
               type="text"
               disabled={this.state.gitHubScope === 'all'}
               onChange={this.gitHubOwnerChange}
               value={this.state.gitHubOwner}/>
-            <label>Repository:</label>
+            <label>GitHub repository:</label>
             <input 
               className={this.state.invalidState && this.state.invalidState.gitHubRepoInvalid ? 'invalid' : ''}
               type="text"
@@ -297,6 +303,14 @@ export class Stage extends React.Component<Props, State> {
               onChange={this.gitHubRepoChange}
               value={this.state.gitHubRepo} />
           </div>
+          {this.state.invalidState && (
+            <ul className='validation-errors'>
+              {this.state.invalidState.gitHubDomainInvalid && <li>{this.state.invalidState.gitHubDomainInvalid}</li>}
+              {this.state.invalidState.jiraURLInvalid && <li>{this.state.invalidState.jiraURLInvalid}</li>}
+              {this.state.invalidState.gitHubOwnerInvalid && <li>{this.state.invalidState.gitHubOwnerInvalid}</li>}
+              {this.state.invalidState.gitHubRepoInvalid && <li>{this.state.invalidState.gitHubRepoInvalid}</li>}
+            </ul>
+          )}
           <div className="form-group">
             <button type="submit">Add</button>
           </div>
@@ -322,7 +336,7 @@ const StyledStage = styled(Stage)`
   }
 }
 
-input {
+input, select {
   background: #111;
   border: 1px solid #222;
   padding: 3px 7px;
@@ -393,6 +407,10 @@ form {
     > input {
       margin-right: 15px;
     }
+  }
+
+  > .validation-errors {
+    color: ${p => p.theme.colorRed};
   }
 }
 `;
