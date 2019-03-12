@@ -4,7 +4,7 @@ import * as config from '../../shared/config';
 import * as permissions from '../../shared/permissions';
 import { EXTENSION_NAME } from '../../shared/consts';
 
-import {styled} from './styling';
+import { ThemeProvider, defaultTheme, styled } from './styling';
 
 interface Props {
   className?: string;
@@ -20,6 +20,12 @@ interface State {
   gitHubScope: string;
   gitHubOwner: string;
   gitHubRepo: string;
+}
+
+function l10nJoinItems(items: string[]): string {
+  if (items.length === 0) return '';
+  if (items.length === 1) return items[0];
+  return items.slice(0, items.length - 1).join(', ') + ' and ' + items[items.length-1];
 }
 
 export class Stage extends React.Component<Props, State> {
@@ -43,6 +49,7 @@ export class Stage extends React.Component<Props, State> {
     this.gitHubRepoChange = this.gitHubRepoChange.bind(this);
     this.addLink = this.addLink.bind(this);
     this.deleteLink = this.deleteLink.bind(this);
+    this.fixBrokenPermissions = this.fixBrokenPermissions.bind(this);
   }
 
   public componentDidMount() {
@@ -103,12 +110,7 @@ export class Stage extends React.Component<Props, State> {
       )
     });
     config.setConfig(c);
-    // Work out which origins we do not have but need
-    const missingOrigins = permissions.missingOriginPermissions(c, this.state.grantedOrigins);
-    console.log(this.state.grantedOrigins, missingOrigins);
-    if (missingOrigins.length > 0) {
-      chrome.permissions.request({ origins: missingOrigins });
-    }
+    this.updatePermissions(c);
   }
 
   private deleteLink(key: number) {
@@ -116,17 +118,37 @@ export class Stage extends React.Component<Props, State> {
       const c = this.state.config.slice();
       c.splice(key, 1);
       config.setConfig(c);
-      const unneededOrigins = permissions.unneededOriginPermissions(c, this.state.grantedOrigins);
-      console.log(this.state.grantedOrigins, unneededOrigins);
-      if (unneededOrigins.length > 0) {
-        chrome.permissions.remove({ origins: unneededOrigins });
-      }
+      this.updatePermissions(c);
     }
   }
 
+  private updatePermissions(config: config.LinkConfiguration[]) {
+    const missingOrigins = permissions.missingOriginPermissions(config, this.state.grantedOrigins);
+    if (missingOrigins.length > 0) {
+      chrome.permissions.request({ origins: missingOrigins });
+    }
+    const unneededOrigins = permissions.unneededOriginPermissions(config, this.state.grantedOrigins);
+    if (unneededOrigins.length > 0) {
+      chrome.permissions.remove({ origins: unneededOrigins });
+    }
+  }
+
+  private fixBrokenPermissions() {
+    this.updatePermissions(this.state.config);
+  }
+
   public render() {
+    const missingDomains = permissions
+      .missingOriginPermissions(this.state.config, this.state.grantedOrigins)
+      .map(origin => new URL(origin).hostname);
     return (
       <div className={this.props.className}>
+        {missingDomains.length > 0 ? (
+          <div className='error-message'>
+            This extension requires permission to access {l10nJoinItems(missingDomains)} to function properly with your current configuration.
+            <button onClick={this.fixBrokenPermissions}>Grant Permission</button>
+          </div>
+        ) : null}
         <h1>{EXTENSION_NAME}</h1>
         <p>Configure which GitHub repositories you would like to link with which JIRA installations below. This plugin supports both GitHub Enterprise, and GitHub.com.</p>
         <p>Every time you view lists of issues or pull requests on GitHub, the plugin will check the appropriate JIRA for each issue to see if there is a reference to it, and if so it will add a link to JIRA, including the status information.</p>
@@ -191,6 +213,19 @@ export class Stage extends React.Component<Props, State> {
 
 const StyledStage = styled(Stage)`
 
+.error-message {
+  border-top: 2px solid ${p => p.theme.colorRed};
+  border-bottom: 2px solid ${p => p.theme.colorRed};
+  padding: 10px;
+  background: #060606;
+  color: ${p => p.theme.colorRed};
+
+  button {
+    margin: 0 10px;
+    
+  }
+}
+
 a {
   color: #fff;
   text-decoration: underline;
@@ -251,5 +286,9 @@ form {
 `;
 
 export function rootComponent() {
-  return <StyledStage />;
+  return (
+    <ThemeProvider theme={defaultTheme}>
+      <StyledStage />
+    </ThemeProvider>
+    );
 }
