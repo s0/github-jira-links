@@ -1,5 +1,6 @@
-import { LinkConfiguration, getConfig, addListener } from '../shared/config';
+import { getConfig, addListener } from '../shared/config';
 import { missingOriginPermissions } from '../shared/permissions';
+import { EXTENSION_NAME } from '../shared/consts';
 
 getConfig().then(config => {
 
@@ -25,10 +26,10 @@ getConfig().then(config => {
       if (missingOrigins.length > 0) {
         chrome.browserAction.setBadgeBackgroundColor({ color: [247, 108, 108, 255] });
         chrome.browserAction.setBadgeText({ text: 'ERR' });
-        chrome.browserAction.setTitle({ title: 'Missing Permissions' });
+        chrome.browserAction.setTitle({ title: `Missing Permissions: ${EXTENSION_NAME}` });
       } else {
         chrome.browserAction.setBadgeText({ text: '' });
-        chrome.browserAction.setTitle({ title: 'Configure Links for GitHub & Jira' });
+        chrome.browserAction.setTitle({ title: `Configure ${EXTENSION_NAME}` });
       }
       console.log('permissions: ', permissions, grantedOrigins);
     });

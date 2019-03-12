@@ -2,6 +2,7 @@ import * as React from 'react';
 
 import * as config from '../../shared/config';
 import * as permissions from '../../shared/permissions';
+import { EXTENSION_NAME } from '../../shared/consts';
 
 import {styled} from './styling';
 
@@ -126,7 +127,7 @@ export class Stage extends React.Component<Props, State> {
   public render() {
     return (
       <div className={this.props.className}>
-        <h1>Links for GitHub &amp; Jira</h1>
+        <h1>{EXTENSION_NAME}</h1>
         <p>Configure which GitHub repositories you would like to link with which JIRA installations below. This plugin supports both GitHub Enterprise, and GitHub.com.</p>
         <p>Every time you view lists of issues or pull requests on GitHub, the plugin will check the appropriate JIRA for each issue to see if there is a reference to it, and if so it will add a link to JIRA, including the status information.</p>
         <p>Have suggestions, feedback or want to report an issue? Please <a href='https://github.com/samlanning/github-jira-links/issues' target='_blank' rel='nofollow noopener'>open an issue on GitHub</a>.</p>
