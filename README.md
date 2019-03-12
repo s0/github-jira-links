@@ -24,7 +24,5 @@ TODO:
 * look for additional JIRA issue keys in the titles / descriptions of issues and PRs, and commit messages, and display links there too (probably download list of JIRA projects to do this)
 * Add validation to the new form on the options page
 * Add ability to edit existing entries
-* Add icon / logo
-* Display a warning on the icon when there are permissions missing
 * Display a warning on the settings page when there are missing permissions, with ability to resolve
 * Handle being logged out of JIRA gracefully, and display a warning to users on GitHub
