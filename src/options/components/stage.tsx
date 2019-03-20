@@ -37,7 +37,7 @@ interface Validation {
 }
 
 /** Very primitive sanity check on repo and owner names */
-const REPO_OWNER_MATCH = /^[a-z0-9_-]+$/;
+const REPO_OWNER_MATCH = /^[a-zA-Z0-9_-]+$/;
 
 export class Stage extends React.Component<Props, State> {
 
