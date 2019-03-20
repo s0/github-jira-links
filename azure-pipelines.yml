@@ -13,5 +13,5 @@ steps:
 - script: |
     yarn install
     git checkout node_modules
-    gulp
+    yarn run build
   displayName: 'build chrome-extension'

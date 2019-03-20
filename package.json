@@ -3,6 +3,9 @@
   "version": "0.0.1",
   "description": "Chrome extension that adds backlinks to JIRA issues from GitHub issues and PRs",
   "license": "MIT",
+  "scripts": {
+    "build": "gulp"
+  },
   "author": {
     "name": "Sam Lanning",
     "email": "sam@samlanning.com",
