@@ -9,7 +9,7 @@
     "indent": [true, "spaces"],
     "jsdoc-format": true,
     "label-position": true,
-    "max-line-length": [true, 140],
+    "max-line-length": [true, 240],
     "member-access": true,
     "member-ordering": [true,
       "static-before-instance",

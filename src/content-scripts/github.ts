@@ -21,8 +21,8 @@ getConfig().then(config => {
         if (c.gitHubDomain === window.location.hostname) {
           if (
             (c.repos.scope === 'all') ||
-            (c.repos.scope === 'owner' && c.repos.owner === owner) ||
-            (c.repos.scope === 'single' && c.repos.owner === owner && c.repos.repo === repo)) {
+            (c.repos.scope === 'owner' && c.repos.owner.toLocaleLowerCase() === owner.toLocaleLowerCase()) ||
+            (c.repos.scope === 'single' && c.repos.owner.toLocaleLowerCase() === owner.toLocaleLowerCase() && c.repos.repo.toLocaleLowerCase() === repo.toLocaleLowerCase())) {
             return c.jiraBaseUrl;
           }
         }
