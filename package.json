@@ -1,6 +1,6 @@
 {
   "name": "@samlanning/github-jira-links",
-  "version": "0.0.1",
+  "version": "0.0.3",
   "description": "Chrome extension that adds backlinks to JIRA issues from GitHub issues and PRs",
   "license": "MIT",
   "scripts": {
