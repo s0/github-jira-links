@@ -1,5 +1,5 @@
 <p align="center">
-  <a href="https://chrome.google.com/webstore/detail/links-for-github-jira/mcedjinjmcpfknajacebeokngmnlphik"><img src="doc/webstore.png" /></a>
+  <a href="https://chrome.google.com/webstore/detail/links-for-github-jira/mcedjinjmcpfknajacebeokngmnlphik"><img src="img/webstore.png" /></a>
 </p>
 
 # Links for GitHub & Jira
