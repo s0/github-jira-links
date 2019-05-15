@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "Links for GitHub & Jira",
-  "description": "Chrome extension that adds inks to JIRA issues from GitHub issues and PRs",
+  "description": "Chrome extension that adds links to JIRA issues from GitHub issues and PRs",
   "version": "0.0.3",
   "permissions": [
     "storage"
