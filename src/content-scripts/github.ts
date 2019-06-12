@@ -83,9 +83,6 @@ getConfig().then(config => {
     };
 
     const updateIssues = () => {
-
-      // Check if we are in a repo that we care about
-
       for (const elem of document.querySelectorAll('.js-issue-row')) {
         if (elem.classList.contains(CLASS_ROW_DISCOVERED)) continue;
         elem.classList.add(CLASS_ROW_DISCOVERED);
