@@ -1,9 +1,13 @@
+import { ContentScriptMessage, JiraApiResponse } from '../shared/messages';
+
 export interface JiraLink {
   name: string;
   url: string;
   status: string;
   statusColor: StatusColor;
 }
+
+export type JiraError = 'login-required' | 'unknown-error';
 
 /**
  * Well-known status colors, as defined here:
@@ -43,7 +47,7 @@ interface JiraSearchResponse {
  */
 const cache = new Map<string, Map<string, JiraLink[]>>();
 
-export async function loadJiraData(issueUrl: URL, jiraUrl: string): Promise<JiraLink[]> {
+export async function loadJiraData(issueUrl: URL, jiraUrl: string): Promise<JiraLink[] | JiraError> {
   let jiraMap = cache.get(jiraUrl);
   if (!jiraMap) {
     jiraMap = new Map<string, JiraLink[]>();
@@ -55,9 +59,14 @@ export async function loadJiraData(issueUrl: URL, jiraUrl: string): Promise<Jira
   // TODO
   const url = `${jiraUrl}/rest/api/2/search?jql=text%20~%20"${encodeURIComponent(issueUrl.href)}"`;
   console.log(url);
-  const response = await fetch(url);
-  const body = await response.text();
-  const json = JSON.parse(body) as JiraSearchResponse;
+  const msg: ContentScriptMessage = {
+    type: 'jira-api-call', url
+  };
+  const response: JiraApiResponse = await new Promise(resolve => chrome.runtime.sendMessage(msg, resolve));
+  if (response.type === 'error') {
+    return response.status === 401 ? 'login-required' : 'unknown-error';
+  }
+  const json = JSON.parse(response.data) as JiraSearchResponse;
   const result: JiraLink[] = [];
   for (const issue of json.issues) {
     result.push({
@@ -69,4 +78,18 @@ export async function loadJiraData(issueUrl: URL, jiraUrl: string): Promise<Jira
   }
   jiraMap.set(issueUrl.href, result);
   return result;
+}
+
+export async function isLoggedIn(jiraUrl: string): Promise<boolean> {
+  const url = `${jiraUrl}/rest/api/2/myself`;
+  const msg: ContentScriptMessage = {
+    type: 'jira-api-call', url
+  };
+  const response: JiraApiResponse = await new Promise(resolve => chrome.runtime.sendMessage(msg, resolve));
+  if (response.type === 'error') {
+    if (response.status === 401) return false;
+    throw new Error('unrecognized error');
+  } else {
+    return true;
+  }
 }
