@@ -2,7 +2,7 @@
   "manifest_version": 2,
   "name": "Links for GitHub & Jira",
   "description": "Chrome extension that adds links to JIRA issues from GitHub issues and PRs",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "permissions": [
     "storage"
   ],
