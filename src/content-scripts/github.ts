@@ -53,10 +53,17 @@ getConfig().then(config => {
         labels.appendChild(loading);
         const info = await loadJiraData(issueURL, jira);
         loading.remove();
-        for (const i of info) {
-          const label = dom.createJiraLabel(i);
+        if (info === 'login-required') {
           labels.appendChild(document.createTextNode(' '));
-          labels.appendChild(label);
+          labels.appendChild(dom.createLoginPromptLabel(jira));
+        } else if (info === 'unknown-error') {
+          labels.appendChild(document.createTextNode(' '));
+          labels.appendChild(dom.createErrorLabel('Error fetching JIRA data'));
+        } else {
+          for (const i of info) {
+            labels.appendChild(document.createTextNode(' '));
+            labels.appendChild(dom.createJiraLabel(i));
+          }
         }
       }
     };

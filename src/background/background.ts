@@ -1,6 +1,6 @@
 import { getConfig, addListener } from '../shared/config';
 import { missingOriginPermissions } from '../shared/permissions';
-import { EXTENSION_NAME } from '../shared/consts';
+import { EXTENSION_NAME, COLOR_RED } from '../shared/consts';
 import { ContentScriptMessage, JiraApiResponse } from '../shared/messages';
 
 getConfig().then(config => {
@@ -23,7 +23,7 @@ getConfig().then(config => {
       }
       const missingOrigins = missingOriginPermissions(config, grantedOrigins);
       if (missingOrigins.length > 0) {
-        chrome.browserAction.setBadgeBackgroundColor({ color: [247, 108, 108, 255] });
+        chrome.browserAction.setBadgeBackgroundColor({ color: [...COLOR_RED, 255] });
         chrome.browserAction.setBadgeText({ text: 'ERR' });
         chrome.browserAction.setTitle({ title: `Missing Permissions: ${EXTENSION_NAME}` });
       } else {

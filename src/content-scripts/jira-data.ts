@@ -7,6 +7,8 @@ export interface JiraLink {
   statusColor: StatusColor;
 }
 
+export type JiraError = 'login-required' | 'unknown-error';
+
 /**
  * Well-known status colors, as defined here:
  * - https://docs.atlassian.com/DAC/javadoc/jira/reference/com/atlassian/jira/issue/status/category/StatusCategory.html
@@ -45,7 +47,7 @@ interface JiraSearchResponse {
  */
 const cache = new Map<string, Map<string, JiraLink[]>>();
 
-export async function loadJiraData(issueUrl: URL, jiraUrl: string): Promise<JiraLink[]> {
+export async function loadJiraData(issueUrl: URL, jiraUrl: string): Promise<JiraLink[] | JiraError> {
   let jiraMap = cache.get(jiraUrl);
   if (!jiraMap) {
     jiraMap = new Map<string, JiraLink[]>();
@@ -62,8 +64,7 @@ export async function loadJiraData(issueUrl: URL, jiraUrl: string): Promise<Jira
   };
   const response: JiraApiResponse = await new Promise(resolve => chrome.runtime.sendMessage(msg, resolve));
   if (response.type === 'error') {
-    // TODO handle logout
-    return [];
+    return response.status === 401 ? 'login-required' : 'unknown-error';
   }
   const json = JSON.parse(response.data) as JiraSearchResponse;
   const result: JiraLink[] = [];
