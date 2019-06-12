@@ -38,6 +38,12 @@ interface JiraSearchResponse {
   }[];
 }
 
+type JiraProjectsResponse = {
+  self: string;
+  id: string;
+  key: string;
+}[];
+
 /**
  * Map from JIRA URL -> Issue URL -> result
  *
@@ -92,4 +98,16 @@ export async function isLoggedIn(jiraUrl: string): Promise<boolean> {
   } else {
     return true;
   }
+}
+
+export async function getJiraProjects(jiraUrl: string): Promise<JiraProjectsResponse | JiraError> {
+  const url = `${jiraUrl}/rest/api/2/project`;
+  const msg: ContentScriptMessage = {
+    type: 'jira-api-call', url
+  };
+  const response: JiraApiResponse = await new Promise(resolve => chrome.runtime.sendMessage(msg, resolve));
+  if (response.type === 'error') {
+    return response.status === 401 ? 'login-required' : 'unknown-error';
+  }
+  return JSON.parse(response.data) as JiraProjectsResponse;
 }

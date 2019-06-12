@@ -1,6 +1,6 @@
 import { getConfig } from '../shared/config';
 
-import { loadJiraData, isLoggedIn } from './jira-data';
+import { loadJiraData, isLoggedIn, getJiraProjects } from './jira-data';
 import * as dom from './dom';
 
 getConfig().then(config => {
@@ -40,45 +40,54 @@ getConfig().then(config => {
       return null;
     };
 
-    const updateIssueRow = async (row: Element) => {
+    const updateIssueRow = (row: Element) => {
       const issueLink =
         row.querySelector('a[data-hovercard-type="issue"]') ||
         row.querySelector('a[data-hovercard-type="pull_request"]') ||
         row.querySelector('a.h4.link-gray-dark');
       if (!issueLink) return;
-      const href = (issueLink as HTMLAnchorElement).href;
+      const a = (issueLink as HTMLAnchorElement);
+      const href = a.href;
       if (!href) return;
       const issueURL = new URL(href);
       const jira = getMatchingJira(issueURL);
       if (jira) {
-        let labels = row.querySelector('.labels');
-        if (!labels) {
-          labels = document.createElement('span');
-          labels.className = 'labels lh-default';
-          const parent = issueLink.parentNode;
-          if (!(parent instanceof Element)) return;
-          parent.insertBefore(labels, parent.querySelector('.text-small'));
-        }
-        const loading = dom.createLoadingLabel();
-        labels.appendChild(loading);
-        const info = await loadJiraData(issueURL, jira);
-        let isLoggedIn = await getJiraLoginStatus(jira);
-        loading.remove();
-        if (info === 'login-required') {
-          isLoggedIn = false;
-        } else if (info === 'unknown-error') {
-          labels.appendChild(document.createTextNode(' '));
-          labels.appendChild(dom.createErrorLabel('Error fetching JIRA data'));
-        } else {
-          for (const i of info) {
-            labels.appendChild(document.createTextNode(' '));
-            labels.appendChild(dom.createJiraLabel(i));
+        // Search by issue URL
+        (async () => {
+          let labels = row.querySelector('.labels');
+          if (!labels) {
+            labels = document.createElement('span');
+            labels.className = 'labels lh-default';
+            const parent = issueLink.parentNode;
+            if (!(parent instanceof Element)) return;
+            parent.insertBefore(labels, parent.querySelector('.text-small'));
           }
-        }
-        if (!isLoggedIn) {
-          labels.appendChild(document.createTextNode(' '));
-          labels.appendChild(dom.createLoginPromptLabel(jira));
-        }
+          const loading = dom.createLoadingLabel();
+          labels.appendChild(loading);
+          const info = await loadJiraData(issueURL, jira);
+          let isLoggedIn = await getJiraLoginStatus(jira);
+          loading.remove();
+          if (info === 'login-required') {
+            isLoggedIn = false;
+          } else if (info === 'unknown-error') {
+            labels.appendChild(document.createTextNode(' '));
+            labels.appendChild(dom.createErrorLabel('Error fetching JIRA data'));
+          } else {
+            for (const i of info) {
+              labels.appendChild(document.createTextNode(' '));
+              labels.appendChild(dom.createJiraLabel(i));
+            }
+          }
+          if (!isLoggedIn) {
+            labels.appendChild(document.createTextNode(' '));
+            labels.appendChild(dom.createLoginPromptLabel(jira));
+          }
+        })();
+        // Search issue title for issues
+        (async () => {
+          const projects = await getJiraProjects(jira);
+          console.log(projects);
+        })();
       }
     };
 
