@@ -1,6 +1,7 @@
 import { getConfig, addListener } from '../shared/config';
 import { missingOriginPermissions } from '../shared/permissions';
 import { EXTENSION_NAME } from '../shared/consts';
+import { ContentScriptMessage, JiraApiResponse } from '../shared/messages';
 
 getConfig().then(config => {
 
@@ -84,5 +85,24 @@ getConfig().then(config => {
       }
     }
   }
+
+  chrome.runtime.onMessage.addListener((req: ContentScriptMessage, _sender, sendResponse) => {
+    if (req.type === 'jira-api-call') {
+      (async () => {
+        const response = await fetch(req.url);
+        const result: JiraApiResponse =
+          response.ok ?
+          {
+            type: 'success',
+            data: await response.text()
+          } : {
+            type: 'error',
+            status: response.status
+          };
+        sendResponse(result);
+      })();
+      return true;
+    }
+  });
 });
 

@@ -1,3 +1,5 @@
+import { ContentScriptMessage, JiraApiResponse } from '../shared/messages';
+
 export interface JiraLink {
   name: string;
   url: string;
@@ -55,9 +57,15 @@ export async function loadJiraData(issueUrl: URL, jiraUrl: string): Promise<Jira
   // TODO
   const url = `${jiraUrl}/rest/api/2/search?jql=text%20~%20"${encodeURIComponent(issueUrl.href)}"`;
   console.log(url);
-  const response = await fetch(url);
-  const body = await response.text();
-  const json = JSON.parse(body) as JiraSearchResponse;
+  const msg: ContentScriptMessage = {
+    type: 'jira-api-call', url
+  };
+  const response: JiraApiResponse = await new Promise(resolve => chrome.runtime.sendMessage(msg, resolve));
+  if (response.type === 'error') {
+    // TODO handle logout
+    return [];
+  }
+  const json = JSON.parse(response.data) as JiraSearchResponse;
   const result: JiraLink[] = [];
   for (const issue of json.issues) {
     result.push({
