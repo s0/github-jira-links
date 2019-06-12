@@ -1,6 +1,6 @@
 import { getConfig } from '../shared/config';
 
-import { loadJiraData } from './jira-data';
+import { loadJiraData, isLoggedIn } from './jira-data';
 import * as dom from './dom';
 
 getConfig().then(config => {
@@ -11,6 +11,16 @@ getConfig().then(config => {
     console.log('Injecting Content Script');
 
     const CLASS_ROW_DISCOVERED = 'gh-jira-script-discovered';
+
+    const loginPromises = new Map<string, Promise<boolean>>();
+    const getJiraLoginStatus = (jiraUrl: string) => {
+      let promise = loginPromises.get(jiraUrl);
+      if (!promise) {
+        promise = isLoggedIn(jiraUrl);
+        loginPromises.set(jiraUrl, promise);
+      }
+      return promise;
+    };
 
     const getMatchingJira = (issueURL: URL) => {
       const pathSplit = issueURL.pathname.split('/');
@@ -52,10 +62,10 @@ getConfig().then(config => {
         const loading = dom.createLoadingLabel();
         labels.appendChild(loading);
         const info = await loadJiraData(issueURL, jira);
+        let isLoggedIn = await getJiraLoginStatus(jira);
         loading.remove();
         if (info === 'login-required') {
-          labels.appendChild(document.createTextNode(' '));
-          labels.appendChild(dom.createLoginPromptLabel(jira));
+          isLoggedIn = false;
         } else if (info === 'unknown-error') {
           labels.appendChild(document.createTextNode(' '));
           labels.appendChild(dom.createErrorLabel('Error fetching JIRA data'));
@@ -64,6 +74,10 @@ getConfig().then(config => {
             labels.appendChild(document.createTextNode(' '));
             labels.appendChild(dom.createJiraLabel(i));
           }
+        }
+        if (!isLoggedIn) {
+          labels.appendChild(document.createTextNode(' '));
+          labels.appendChild(dom.createLoginPromptLabel(jira));
         }
       }
     };

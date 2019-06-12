@@ -79,3 +79,17 @@ export async function loadJiraData(issueUrl: URL, jiraUrl: string): Promise<Jira
   jiraMap.set(issueUrl.href, result);
   return result;
 }
+
+export async function isLoggedIn(jiraUrl: string): Promise<boolean> {
+  const url = `${jiraUrl}/rest/api/2/myself`;
+  const msg: ContentScriptMessage = {
+    type: 'jira-api-call', url
+  };
+  const response: JiraApiResponse = await new Promise(resolve => chrome.runtime.sendMessage(msg, resolve));
+  if (response.type === 'error') {
+    if (response.status === 401) return false;
+    throw new Error('unrecognized error');
+  } else {
+    return true;
+  }
+}
